@@ -4,12 +4,12 @@
   "description": "Testing AngularJS apps with jasmint on coffe script",
   "main": "index.js",
   "scripts": {
-    "gulp": "gulp --require coffee-script/register",
+     "gulp": "gulp --require coffee-script/register",
     "clean": "gulp clean",
-    "build": "gulp default",
+    "build": "gulp",
     "serve": "gulp clean && gulp serve",
-    "dev": "gulp dev",
-    "test": "gulp jasmine",
+      "dev": "gulp dev",
+     "test": "gulp jasmine",
     "watch": "gulp clean && gulp dev && gulp watch"
   },
   "repository": {
