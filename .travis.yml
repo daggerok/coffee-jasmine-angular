@@ -5,7 +5,9 @@ cache:
   directories:
     - node_modules
 script:
+  - npm run clean
   - npm run build
+  - npm run test
 notifications:
   email:
     recipients:

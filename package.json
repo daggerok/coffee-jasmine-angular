@@ -6,6 +6,7 @@
   "scripts": {
     "gulp": "gulp --require coffee-script/register",
     "clean": "gulp clean",
+    "build": "gulp default",
     "test": "gulp jasmine"
   },
   "repository": {
