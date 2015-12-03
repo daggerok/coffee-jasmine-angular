@@ -31,15 +31,10 @@ jsvendors = [ modules + 'jquery/dist/jquery.js'
               modules + 'angular/angular.js' ]
 styles    = [ srcDir + cssFiles ]
 scripts   = [ srcDir + coffees ]
-jsScripts = [ buildDir + jsFiles ]
 htmls     = [ srcDir + htmlFiles ]
 
 gulp.task 'clean', ->
   gulp.src buildDir
-    .pipe remove force: true
-
-gulp.task 'clean-js', ->
-  gulp.src jsScripts
     .pipe remove force: true
 
 gulp.task 'css', ->
@@ -110,7 +105,7 @@ gulp.task 'css-dev', ->
 
 devScripts = [ srcDir + coffees
                testDir + coffees ]
-gulp.task 'js-dev', ['clean-js'], ->
+gulp.task 'js-dev', ->
   streams
       objectMode: true,
       gulp.src(jsvendors),
@@ -118,17 +113,17 @@ gulp.task 'js-dev', ['clean-js'], ->
     .pipe gulp.dest buildDir
     .pipe connect.reload()
 
-testScripts = [buildDir + jsTests]
-
-gulp.task 'jasmine', ['js-dev'], ->
-  gulp.src testScripts
+gulp.task 'jasmine', ->
+  gulp.src buildDir + jsTests
     .pipe plumber()
     .pipe jasmine
       coffee: false # test compiled js
       autotest: true
 
 gulp.task 'watch', ['connect'], ->
-  gulp.watch devScripts, ['js-dev', 'jasmine']
+  gulp.watch devScripts, ['js-dev']
+  gulp.watch buildDir + '**/*', ['jasmine']
+  gulp.watch srcDir + cssFiles, ['css-dev']
   gulp.watch htmls, ['html-dev']
 
-gulp.task 'dev', ['css-dev', 'html-dev', 'jasmine']
+gulp.task 'dev', ['css-dev', 'html-dev', 'js-dev', 'jasmine']
