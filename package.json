@@ -7,8 +7,9 @@
     "gulp": "gulp --require coffee-script/register",
     "clean": "gulp clean",
     "build": "gulp default",
-    "test": "gulp dev",
     "serve": "gulp clean && gulp serve",
+    "dev": "gulp dev",
+    "test": "gulp jasmine",
     "watch": "gulp clean && gulp dev && gulp watch"
   },
   "repository": {

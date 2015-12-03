@@ -126,4 +126,4 @@ gulp.task 'watch', ['connect'], ->
   gulp.watch srcDir + cssFiles, ['css-dev']
   gulp.watch htmls, ['html-dev']
 
-gulp.task 'dev', ['css-dev', 'html-dev', 'js-dev', 'jasmine']
+gulp.task 'dev', ['css-dev', 'html-dev', 'js-dev']
