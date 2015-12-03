@@ -56,7 +56,7 @@ processCoffee = (scripts) ->
     .pipe coffee bare: true
     .on 'error', -> console?.log error
 
-gulp.task 'js', ['clean-js'], ->
+gulp.task 'js', ->
   streams
       objectMode: true,
       gulp.src(jsvendors),
