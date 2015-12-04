@@ -12,60 +12,59 @@ htmlace   = require 'gulp-html-replace'
 htmlify   = require 'gulp-minify-html'
 jasmine   = require 'gulp-jasmine'
 connect   = require 'gulp-connect'
+srcmaps   = require 'gulp-sourcemaps'
 
 buildDir  = 'dist/'
 srcDir    = 'src/'
-testDir   = 'tests/'
 modules   = 'node_modules/'
-coffeeDir = srcDir + 'scripts/'
-
 coffees   = '**/*.coffee'
-jsTests   = '**/*Test.js'
-htmlFiles = '**/*.html'
 cssFiles  = '**/*.css'
-jsFiles   = '**/*.js'
+htmls     = [ srcDir + '**/*.html' ]
 
-cssvendor = modules + 'bootstrap/dist/css/bootstrap.css'
-jsvendors = [ modules + 'jquery/dist/jquery.js'
-              modules + 'bootstrap/dist/js/bootstrap.js'
-              modules + 'angular/angular.js' ]
-styles    = [ srcDir + cssFiles ]
-scripts   = [ srcDir + coffees ]
-htmls     = [ srcDir + htmlFiles ]
+css = ->
+  streams
+    objectMode: true,
+    gulp.src modules + 'bootstrap/dist/css/bootstrap.css'
+    gulp.src srcDir + cssFiles
+
+js = (scripts) ->
+  streams
+    objectMode: true,
+    gulp.src modules + 'jquery/dist/jquery.js'
+    gulp.src modules + 'bootstrap/dist/js/bootstrap.js'
+    gulp.src modules + 'angular/angular.js'
+    gulp.src scripts
+      .pipe plumber()
+      .pipe coffee bare: true
+      .on 'error', -> console?.log error
 
 gulp.task 'clean', ->
   gulp.src buildDir
     .pipe remove force: true
 
 gulp.task 'css', ->
-  streams
-      objectMode: true,
-      gulp.src cssvendor
-      gulp.src styles
+  css()
+    .pipe srcmaps.init()
     .pipe plumber()
     .pipe prefixer()
     .pipe plumber()
     .pipe concat 'index.css'
     .pipe plumber()
     .pipe postcss [ csswring removeAllComments: true ]
+    .pipe srcmaps.write('debug')
     .pipe gulp.dest buildDir
-
-processCoffee = (scripts) ->
-  gulp.src scripts
-    .pipe plumber()
-    .pipe coffee bare: true
-    .on 'error', -> console?.log error
+    .pipe connect.reload()
 
 gulp.task 'js', ->
-  streams
-      objectMode: true,
-      gulp.src(jsvendors),
-      processCoffee scripts
+  js srcDir + coffees
+    .pipe srcmaps.init()
     .pipe plumber()
     .pipe concat 'index.js'
     .pipe plumber()
     .pipe uglify()
+    .pipe srcmaps.write('debug')
     .pipe gulp.dest buildDir
+    .pipe connect.reload()
 
 gulp.task 'html', ->
   gulp.src htmls
@@ -79,6 +78,7 @@ gulp.task 'html', ->
       conditionals: true
       spare: true
     .pipe gulp.dest buildDir
+    .pipe connect.reload()
 
 gulp.task 'default', ['css', 'js', 'html']
 
@@ -89,41 +89,34 @@ gulp.task 'connect', ->
 
 gulp.task 'serve', ['default', 'connect']
 
+gulp.task 'css-dev', ->
+  css()
+    .pipe gulp.dest buildDir
+    .pipe connect.reload()
+
+devScripts = [ srcDir + coffees
+               'tests/' + coffees ]
+gulp.task 'js-dev', ->
+  js devScripts
+    .pipe gulp.dest buildDir
+    .pipe connect.reload()
+
 gulp.task 'html-dev', ->
   gulp.src htmls
     .pipe gulp.dest buildDir
     .pipe connect.reload()
 
-
-gulp.task 'css-dev', ->
-  streams
-      objectMode: true,
-      gulp.src cssvendor
-      gulp.src styles
-    .pipe gulp.dest buildDir
-    .pipe connect.reload()
-
-devScripts = [ srcDir + coffees
-               testDir + coffees ]
-gulp.task 'js-dev', ->
-  streams
-      objectMode: true,
-      gulp.src(jsvendors),
-      processCoffee devScripts
-    .pipe gulp.dest buildDir
-    .pipe connect.reload()
-
 gulp.task 'jasmine', ->
-  gulp.src buildDir + jsTests
+  gulp.src buildDir + '**/*Test.js'
     .pipe plumber()
     .pipe jasmine
       coffee: false # test compiled js
       autotest: true
 
 gulp.task 'watch', ['connect'], ->
-  gulp.watch devScripts, ['js-dev']
   gulp.watch buildDir + '**/*', ['jasmine']
   gulp.watch srcDir + cssFiles, ['css-dev']
+  gulp.watch devScripts, ['js-dev']
   gulp.watch htmls, ['html-dev']
 
 gulp.task 'dev', ['css-dev', 'html-dev', 'js-dev']
