@@ -112,6 +112,7 @@ gulp.task 'jasmine', ->
     .pipe jasmine
       coffee: false # test compiled js
       autotest: true
+      match: '*Test.js'
 
 gulp.task 'watch', ['connect'], ->
   gulp.watch buildDir + '**/*', ['jasmine']
