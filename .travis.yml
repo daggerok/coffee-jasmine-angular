@@ -6,12 +6,7 @@ cache:
     - node_modules
 script:
   - npm run build
-  - npm run clean
-  - npm run dev
   - npm test
 notifications:
-  email:
-    recipients:
-      - daggerok@gmail.com
-    on_failure: change # always
-    on_success: never
+  on_failure: change # always
+  on_success: never

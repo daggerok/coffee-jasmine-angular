@@ -1,16 +1,18 @@
 {
   "name": "coffee-jasmine-angular",
   "version": "1.0.0",
-  "description": "Testing AngularJS apps with jasmint on coffe script",
-  "main": "index.js",
+  "description": "Testing AngularJS apps with jasmint on coffee script",
+  "main": "src/index.js",
   "scripts": {
+    "pregulp": "npm install",
     "gulp": "gulp --require coffee-script/register",
-    "clean": "gulp clean",
-    "build": "gulp",
-    "serve": "gulp clean && gulp serve",
-    "dev": "gulp dev",
-    "test": "gulp jasmine",
-    "watch": "gulp clean && gulp dev && gulp watch"
+    "clean": "npm run gulp clean",
+    "build": "npm run gulp",
+    "serve": "npm run gulp serve",
+    "dev": "npm run gulp dev",
+    "pretest": "npm run dev",
+    "test": "npm run gulp test",
+    "start": "npm run gulp watch"
   },
   "repository": {
     "type": "git",
